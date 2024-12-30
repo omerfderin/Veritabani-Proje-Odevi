@@ -62,7 +62,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Çalışan başarıyla silindi')),
         );
-        _fetchEmployees(); // Refresh the list
+        _fetchEmployees();
       } else {
         final errorData = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -112,7 +112,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Çalışan güncellendi')),
                       );
-                      _fetchEmployees(); // Refresh the list
+                      _fetchEmployees();
                     } else {
                       final errorData = json.decode(response.body);
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -171,7 +171,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                         const SnackBar(
                             content: Text('Yeni çalışan başarıyla eklendi')),
                       );
-                      _fetchEmployees(); // Refresh the list
+                      _fetchEmployees();
                     } else {
                       final errorData = json.decode(response.body);
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -208,8 +208,8 @@ class _EmployeesPageState extends State<EmployeesPage> {
           child: Container(
               width: 200,
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, // Dikeyde ortalama
-                  crossAxisAlignment: CrossAxisAlignment.center, // Yatayda ortalama
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('Çalışan bulunamadı'),
                     SizedBox(height: 16),
