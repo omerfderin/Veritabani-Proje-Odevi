@@ -8,13 +8,13 @@ import 'dart:async';
 class ProjectTasksPage extends StatefulWidget {
   final Proje selectedProject;
   final Kullanici currentUser;
-  final Function onTaskAdded; // Callback fonksiyonu
+  final Function onTaskAdded;
 
   const ProjectTasksPage({
     Key? key,
     required this.selectedProject,
     required this.currentUser,
-    required this.onTaskAdded, // Callback fonksiyonu
+    required this.onTaskAdded,
   }) : super(key: key);
 
   @override
@@ -127,12 +127,9 @@ class _ProjectTasksPageState extends State<ProjectTasksPage> {
                 rows: _tasksFromApi.map<DataRow>((task) {
                   final endDate = DateTime.parse(task['gBitisTarih']);
                   int delay = 0;
-
-                  // Eğer görev tamamlandıysa, gecikme süresini bir kez hesapla
                   if (task['gDurum'] == 'Tamamlandı') {
                     delay = now.isAfter(endDate) ? now.difference(endDate).inDays : 0;
                   } else {
-                    // Görev tamamlanmadıysa, gecikme süresini hesapla
                     delay = now.isAfter(endDate) ? now.difference(endDate).inDays : 0;
                   }
 
@@ -539,7 +536,6 @@ class _ProjectTasksPageState extends State<ProjectTasksPage> {
                           },
                         );
                         if (date != null) {
-                          // Sadece tarih bilgisini al, saat bilgisini sıfırla
                           final selectedDate =
                           DateTime(date.year, date.month, date.day);
                           _startDateController.text =
@@ -700,7 +696,7 @@ class _ProjectTasksPageState extends State<ProjectTasksPage> {
 
                       if (response.statusCode == 201) {
                         Navigator.pop(context, true);
-                        widget.onTaskAdded(); // Görev eklendikten sonra callback'i çağır
+                        widget.onTaskAdded();
                       } else {
                         throw Exception('Failed to add task: ${response.body}');
                       }
