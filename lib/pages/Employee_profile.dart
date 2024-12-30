@@ -54,14 +54,15 @@ class EmployeeProfilePageState extends State<EmployeeProfilePage> {
     final today = DateTime(now.year, now.month, now.day);
 
     final completedTasks = _employeeTasks.where((task) =>
-    task['gDurum'] == 'Tamamlandı'
-    ).toList();
+    task['gDurum'] == 'Tamamlandı').toList();
 
     final ongoingTasks = _employeeTasks.where((task) {
       final startDate = DateTime.parse(task['gBaslaTarih']).toLocal();
       final endDate = DateTime.parse(task['gBitisTarih']).toLocal();
-      final taskStartDate = DateTime(startDate.year, startDate.month, startDate.day);
-      final taskEndDate = DateTime(endDate.year, endDate.month, endDate.day);
+      final taskStartDate =
+      DateTime(startDate.year, startDate.month, startDate.day);
+      final taskEndDate =
+      DateTime(endDate.year, endDate.month, endDate.day);
 
       return task['gDurum'] != 'Tamamlandı' &&
           !taskStartDate.isAfter(today) &&
@@ -70,87 +71,30 @@ class EmployeeProfilePageState extends State<EmployeeProfilePage> {
 
     final upcomingTasks = _employeeTasks.where((task) {
       final startDate = DateTime.parse(task['gBaslaTarih']).toLocal();
-      final taskStartDate = DateTime(startDate.year, startDate.month, startDate.day);
+      final taskStartDate =
+      DateTime(startDate.year, startDate.month, startDate.day);
 
-      return task['gDurum'] != 'Tamamlandı' &&
-          taskStartDate.isAfter(today);
+      return task['gDurum'] != 'Tamamlandı' && taskStartDate.isAfter(today);
+    }).toList();
+
+    final overdueTasks = _employeeTasks.where((task) {
+      final endDate = DateTime.parse(task['gBitisTarih']).toLocal();
+      final taskEndDate =
+      DateTime(endDate.year, endDate.month, endDate.day);
+
+      return task['gDurum'] != 'Tamamlandı' && taskEndDate.isBefore(today);
     }).toList();
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Column(
         children: [
           TabBar(
             tabs: [
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Tamamlanan'),
-                    const SizedBox(width: 5),
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '${completedTasks.length}',
-                        style: TextStyle(
-                          color: Theme.of(context).textTheme.headlineLarge?.color,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Devam Eden'),
-                    const SizedBox(width: 5),
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '${ongoingTasks.length}',
-                        style: TextStyle(
-                          color: Theme.of(context).textTheme.headlineLarge?.color,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Gelecek'),
-                    const SizedBox(width: 5),
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '${upcomingTasks.length}',
-                        style: TextStyle(
-                          color: Theme.of(context).textTheme.headlineLarge?.color,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildTab('Tamamlanan', completedTasks.length),
+              _buildTab('Devam Eden', ongoingTasks.length),
+              _buildTab('Gelecek', upcomingTasks.length),
+              _buildTab('Geciken', overdueTasks.length),
             ],
           ),
           Expanded(
@@ -159,6 +103,7 @@ class EmployeeProfilePageState extends State<EmployeeProfilePage> {
                 _buildTaskListView(completedTasks),
                 _buildTaskListView(ongoingTasks),
                 _buildTaskListView(upcomingTasks),
+                _buildTaskListView(overdueTasks),
               ],
             ),
           ),
@@ -166,6 +111,33 @@ class EmployeeProfilePageState extends State<EmployeeProfilePage> {
       ),
     );
   }
+
+  Widget _buildTab(String title, int count) {
+    return Tab(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(title),
+          const SizedBox(width: 5),
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              '$count',
+              style: TextStyle(
+                color: Theme.of(context).textTheme.headlineLarge?.color,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildTaskListView(List<Map<String, dynamic>> tasks) {
     if (tasks.isEmpty) {

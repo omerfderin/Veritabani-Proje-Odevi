@@ -87,144 +87,146 @@ class _ProjectTasksPageState extends State<ProjectTasksPage> {
     final now = DateTime.now();
 
     return Expanded(
-        child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width - 16,
-                  ),
-                  child: DataTable(
-                    columnSpacing: 20,
-                    horizontalMargin: 10,
-                    headingRowColor: MaterialStateProperty.all(
-                        Theme.of(context).primaryColor.withOpacity(0.1)),
-                    columns: [
-                      DataColumn(
-                          label: Text('Başlangıç Tarihi',
-                              style: Theme.of(context).textTheme.titleMedium)),
-                      DataColumn(
-                          label: Text('Adam Gün Değeri',
-                              style: Theme.of(context).textTheme.titleMedium)),
-                      DataColumn(
-                          label: Text('Bitiş Tarihi',
-                              style: Theme.of(context).textTheme.titleMedium)),
-                      DataColumn(
-                          label: Text('Durum',
-                              style: Theme.of(context).textTheme.titleMedium)),
-                      DataColumn(
-                          label: Text('Çalışan',
-                              style: Theme.of(context).textTheme.titleMedium)),
-                      DataColumn(
-                          label: Text('Gecikme Süresi (Gün)',
-                              style: Theme.of(context).textTheme.titleMedium)),
-                      DataColumn(
-                          label: Text('Aksiyonlar',
-                              style: Theme.of(context).textTheme.titleMedium)),
-                    ],
-                    rows: _tasksFromApi.map<DataRow>((task) {
-                      final endDate = DateTime.parse(task['gBitisTarih']);
-                      final delay = now.isAfter(endDate)
-                          ? now.difference(endDate).inDays
-                          : 0;
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.of(context).size.width - 16,
+              ),
+              child: DataTable(
+                columnSpacing: 20,
+                horizontalMargin: 10,
+                headingRowColor: MaterialStateProperty.all(
+                    Theme.of(context).primaryColor.withOpacity(0.1)),
+                columns: [
+                  DataColumn(
+                      label: Text('Başlangıç Tarihi',
+                          style: Theme.of(context).textTheme.titleMedium)),
+                  DataColumn(
+                      label: Text('Adam Gün Değeri',
+                          style: Theme.of(context).textTheme.titleMedium)),
+                  DataColumn(
+                      label: Text('Bitiş Tarihi',
+                          style: Theme.of(context).textTheme.titleMedium)),
+                  DataColumn(
+                      label: Text('Durum',
+                          style: Theme.of(context).textTheme.titleMedium)),
+                  DataColumn(
+                      label: Text('Çalışan',
+                          style: Theme.of(context).textTheme.titleMedium)),
+                  DataColumn(
+                      label: Text('Gecikme Süresi (Gün)',
+                          style: Theme.of(context).textTheme.titleMedium)),
+                  DataColumn(
+                      label: Text('Aksiyonlar',
+                          style: Theme.of(context).textTheme.titleMedium)),
+                ],
+                rows: _tasksFromApi.map<DataRow>((task) {
+                  final endDate = DateTime.parse(task['gBitisTarih']);
+                  int delay = 0;
 
-                      return DataRow(
-                        color: MaterialStateProperty.all(delay > 0
-                            ? Theme.of(context)
-                                .colorScheme
-                                .error
-                                .withOpacity(0.1)
-                            : null),
-                        cells: [
-                          DataCell(Text(_formatDate(task['gBaslaTarih']),
-                              style: Theme.of(context).textTheme.bodyMedium)),
-                          DataCell(Text(task['gAdamGun'].toString(),
-                              style: Theme.of(context).textTheme.bodyMedium)),
-                          DataCell(Text(_formatDate(task['gBitisTarih']),
-                              style: Theme.of(context).textTheme.bodyMedium)),
-                          DataCell(Text(task['gDurum'] ?? '',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      color: _getStatusColor(task['gDurum'])))),
-                          DataCell(
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EmployeeProfilePage(
-                                      employeeId: task['Calisanlar_cID'] ??
-                                          task['cID'] ??
-                                          0,
-                                      employeeName:
-                                          task['cAdSoyad'] ?? 'Bilinmeyen',
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                task['cAdSoyad'] ?? 'Atanmamış',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline,
+                  // Eğer görev tamamlandıysa, gecikme süresini bir kez hesapla
+                  if (task['gDurum'] == 'Tamamlandı') {
+                    delay = now.isAfter(endDate) ? now.difference(endDate).inDays : 0;
+                  } else {
+                    // Görev tamamlanmadıysa, gecikme süresini hesapla
+                    delay = now.isAfter(endDate) ? now.difference(endDate).inDays : 0;
+                  }
+
+                  return DataRow(
+                    color: MaterialStateProperty.all(delay > 0
+                        ? Theme.of(context).colorScheme.error.withOpacity(0.1)
+                        : null),
+                    cells: [
+                      DataCell(Text(_formatDate(task['gBaslaTarih']),
+                          style: Theme.of(context).textTheme.bodyMedium)),
+                      DataCell(Text(task['gAdamGun'].toString(),
+                          style: Theme.of(context).textTheme.bodyMedium)),
+                      DataCell(Text(_formatDate(task['gBitisTarih']),
+                          style: Theme.of(context).textTheme.bodyMedium)),
+                      DataCell(Text(task['gDurum'] ?? '',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                              color: _getStatusColor(task['gDurum'])))),
+                      DataCell(
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EmployeeProfilePage(
+                                  employeeId: task['Calisanlar_cID'] ??
+                                      task['cID'] ??
+                                      0,
+                                  employeeName:
+                                  task['cAdSoyad'] ?? 'Bilinmeyen',
                                 ),
                               ),
+                            );
+                          },
+                          child: Text(
+                            task['cAdSoyad'] ?? 'Atanmamış',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
                             ),
                           ),
-                          DataCell(Text(delay > 0 ? delay.toString() : '-',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      color: delay > 0
-                                          ? Theme.of(context).colorScheme.error
-                                          : null))),
-                          DataCell(
-                            PopupMenuButton<String>(
-                              icon: Icon(Icons.more_vert,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                              onSelected: (String action) async {
-                                if (action == 'edit') {
-                                  _showEditTaskDialog(task);
-                                } else if (action == 'delete') {
-                                  await _deleteTask(task['gID']);
-                                }
-                              },
-                              itemBuilder: (BuildContext context) =>
-                                  <PopupMenuEntry<String>>[
-                                PopupMenuItem<String>(
-                                  value: 'edit',
-                                  child: Text('Düzenle',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium),
-                                ),
-                                PopupMenuItem<String>(
-                                  value: 'delete',
-                                  child: Text('Sil',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .error)),
-                                ),
-                              ],
+                        ),
+                      ),
+                      DataCell(Text(delay > 0 ? delay.toString() : '-',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                              color: delay > 0
+                                  ? Theme.of(context).colorScheme.error
+                                  : null))),
+                      DataCell(
+                        PopupMenuButton<String>(
+                          icon: Icon(Icons.more_vert,
+                              color: Theme.of(context).colorScheme.secondary),
+                          onSelected: (String action) async {
+                            if (action == 'edit') {
+                              _showEditTaskDialog(task);
+                            } else if (action == 'delete') {
+                              await _deleteTask(task['gID']);
+                            }
+                          },
+                          itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<String>>[
+                            PopupMenuItem<String>(
+                              value: 'edit',
+                              child: Text('Düzenle',
+                                  style: Theme.of(context).textTheme.bodyMedium),
                             ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                ),
+                            PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Text('Sil',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .error)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
               ),
-            )));
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Color _getStatusColor(String? status) {
@@ -387,16 +389,15 @@ class _ProjectTasksPageState extends State<ProjectTasksPage> {
       );
 
       if (response.statusCode == 200) {
-        // Silme işlemi başarılı olduktan sonra tabloyu güncelle
         await _fetchTasks();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               'Görev başarıyla silindi',
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              style: TextStyle(color: Colors.green),
             ),
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Colors.green,
           ),
         );
       } else {
@@ -455,10 +456,7 @@ class _ProjectTasksPageState extends State<ProjectTasksPage> {
   String _formatDate(String date) {
     try {
       if (date.isEmpty) return 'Belirtilmemiş';
-
-      // UTC'den yerel saat dilimine çevirme
       DateTime parsedDate = DateTime.parse(date).toLocal();
-      // Saat bilgisini sıfırlayarak sadece tarih bilgisini al
       parsedDate = DateTime(parsedDate.year, parsedDate.month, parsedDate.day);
 
       return "${parsedDate.day.toString().padLeft(2, '0')}.${parsedDate.month.toString().padLeft(2, '0')}.${parsedDate.year}";
