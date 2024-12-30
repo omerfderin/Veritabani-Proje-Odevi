@@ -161,7 +161,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
                                         ),
                                         currentUser: widget.currentUser,
                                         onTaskAdded: () {
-                                          _fetchProjects(); // Görev eklendiğinde projeleri yeniden yükle
+                                          _fetchProjects();
                                         },
                                       ),
                                     ),
