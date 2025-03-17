@@ -11,6 +11,10 @@
 - Sistemde çalışanların listelendiği bir bölüm vardır. Bir çalışana tıklanınca detay sayfasında hangi projelerde görevi var ise görünebilir.  Çalışanın bugüne kadar tamamladığı , devam eden yada başlayacak görevleri görünür. 
 - Çalışanın zamanında tamamladığı proje görevleri, zamanında tamamlayamadığı proje görevleri sayılarla ifade edilerek ilgili sayfada  gösterilir.
 
+# PROJE RAPORU
+
+[Raporu görüntülemek için tıklayın](Rapor.pdf)
+
 # PROJE VİDEOSU
 
 [Videoyu görüntülemek için tıklayın](https://www.youtube.com/watch?v=bmfmbanhMKc&ab_channel=BATUHANAYDIN)
